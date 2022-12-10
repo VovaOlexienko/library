@@ -1,0 +1,163 @@
+<header>
+    <div class="bg-dark">
+        <div class="container">
+            <div class="row align-items-center headerLg">
+                <div class="col-lg-3 col-sm-1 col-2 d-flex justify-content-between align-items-center">
+                    <a th:href="@{/book}"><img class="logo" th:src="@{img/logo.png}" alt="" src=""></a>
+                    <div class="btn-group d-none d-lg-block" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                        <button type="button" class="btn btn-info dropdown-toggle buttonAdminMenu"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            Адмін-меню
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a type="button" class="dropdown-item" data-bs-toggle="modal"
+                                   data-bs-target="#addBookModal">Додати книгу</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" th:href="@{/author}">Автори</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" th:href="@{/genre}">Жанри</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-xxl-1 d-none d-xxl-block"></div>
+                <div class="col-lg-4 d-none d-lg-block">
+                    <form class="d-flex justify-content-evenly align-items-center" method="get" th:action="@{/book}">
+                        <input class="form-control inputFindBook" name="authorOrTitle" type="text" placeholder="Пошук книг">
+                        <input class="buttonFindBook" type="image" th:src="@{img/search.png}" alt="">
+                    </form>
+                </div>
+                <div class="col-lg-1 col-md-6 col-sm-2 d-none d-sm-block"></div>
+                <div class="col-xxl-3 col-lg-4 col-md-5 col-sm-9 col-10 d-flex justify-content-end justify-content-sm-between">
+                    <a class="btn btn-success buttonRegister" th:href="@{/registration}"
+                       sec:authorize="!isAuthenticated()">Зареєструватися</a>
+                    <a class="btn btn-primary buttonLogin" th:href="@{/login}"
+                       sec:authorize="!isAuthenticated()">Увійти</a>
+                    <a class="btn btn-success buttonRegister" th:href="@{/logout}"
+                       sec:authorize="isAuthenticated()">Вийти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bg-dark d-sm-none">
+        <div class="container">
+            <div class="row align-items-center navbar-dark">
+                <div class="col-9"></div>
+                <div class="col-3">
+                    <button class="navbar-toggler collapsed buttonOpenAdditionalMenu" type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#additionalMenu" aria-controls="additionalMenu" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon">
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="collapse d-sm-none" id="additionalMenu">
+        <div class="bg-secondary">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-2"></div>
+                    <div class="col-8">
+                        <form class="d-flex justify-content-sm-evenly align-items-center"
+                              method="get" th:action="@{/book}">
+                            <input class="form-control inputFindBook" name="authorOrTitle" type="text" placeholder="Пошук книг">
+                            <input class="buttonFindBook" type="image" th:src="@{img/search.png}" alt="">
+                        </form>
+                    </div>
+                    <div class="col-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bg-secondary d-none d-sm-block d-lg-none">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <form class="d-flex justify-content-sm-evenly align-items-center"
+                          method="get" th:action="@{/book}">
+                        <input class="form-control inputFindBook" name="authorOrTitle" type="text" placeholder="Пошук книг">
+                        <input class="buttonFindBook" type="image" th:src="@{img/search.png}" alt="">
+                    </form>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>
+        </div>
+    </div>
+</header>
+<div>
+    <div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addBookModalLabel">Додати книгу</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <form id="formAddBook" class="formAddBook" enctype="multipart/form-data"
+                                      th:action="@{/saveBook}" method="POST" th:object="${newBook}">
+                                    <div>
+                                        <div class="form-group row">
+                                            <label for="imageParam" class="parameterName">Картинка</label>
+                                            <input type="file" class="form-control" id="imageParam" name="imageParam"
+                                                   accept="image/jpeg,image/png" required>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="contentParam" class="parameterName">Вміст</label>
+                                            <input type="file" class="form-control" id="contentParam"
+                                                   name="contentParam"
+                                                   accept="application/pdf" required>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="id" class="parameterName">ІD</label>
+                                            <input type="number" id="id" class="form-control" name="id" readonly
+                                                   value="-1" required>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="name" class="parameterName">Назва</label>
+                                            <input type="text" id="name" class="form-control" name="name" required>
+                                        </div>
+                                        <div class="form-group row" id="authorSection">
+                                            <label for="authors" class="parameterName">Автор</label>
+                                            <select id="authors" name="authors" class="form-control" required multiple>
+                                                <option th:each="author : ${authors}" th:value="${author.id}"
+                                                        th:text="${author.fio}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="genres" class="parameterName">Жанр</label>
+                                            <select id="genres" name="genres" class="form-control" required multiple>
+                                                <option th:each="genre : ${genres}" th:value="${genre.id}"
+                                                        th:text="${genre.name}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити
+                    </button>
+                    <button type="submit" class="btn btn-primary" form="formAddBook">Зберегти</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,1408 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Онлайн бібліотека</title>
+    <link rel="icon" th:href="@{img/logo.png}">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link th:href="@{css/header.css}" rel="stylesheet">
+    <link th:href="@{css/sectionOne.css}" rel="stylesheet">
+    <link th:href="@{css/sectionTwo.css}" rel="stylesheet">
+    <link th:href="@{css/footer.css}" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<section th:replace="~{header.html}"></section>
+<section th:if="${topFiveBooks.size() > 4}">
+    <div class="bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-12 d-none d-lg-block topFiveBooksText"><h1>Топ 5 найпопулярніших книг</h1></div>
+            </div>
+            <div class="row align-items-center d-none d-lg-flex">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2" th:each="topBook : ${topFiveBooks}">
+                    <a th:href="@{/openBook(bookId=${topBook.id})}">
+                        <img class="topFiveBooks" th:src="*{'data:image/png;base64,' + topBook.image}" alt="" src=""></a>
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+            <div class="bg-light d-lg-none">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-12">
+                            <button class="navbar-toggler collapsed buttonOpenTopFiveBooks" type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#topFiveBooksXs" aria-controls="topFiveBooksXs"
+                                    aria-expanded="false"
+                                    aria-label="Toggle navigation">
+                                Топ 5 найпопулярніших книг
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="topFiveBooksXs" class="collapse">
+                <div class="row align-items-center d-lg-none">
+                    <div class="col-sm-1 d-none d-sm-block"></div>
+                    <div class="col-md col-12 col-sm-4">
+                        <a th:href="@{/openBook(bookId=${topFiveBooks.get(0).id})}">
+                            <img class="topFiveBooks"
+                                 th:src="*{'data:image/png;base64,' + topFiveBooks.get(0).image}"
+                                 alt=""></a>
+                    </div>
+                    <div class="d-none d-sm-block d-md-none col-sm-2"></div>
+                    <div class="col-md col-12 col-sm-4">
+                        <a th:href="@{/openBook(bookId=${topFiveBooks.get(1).id})}">
+                            <img class="topFiveBooks"
+                                 th:src="*{'data:image/png;base64,' + topFiveBooks.get(1).image}"
+                                 alt=""></a>
+                    </div>
+                    <div class="d-none d-sm-block d-md-none col-sm-1"></div>
+                    <div class="d-none d-sm-block d-md-none col-sm-1"></div>
+                    <div class="col-md col-12 col-sm-4">
+                        <a th:href="@{/openBook(bookId=${topFiveBooks.get(2).id})}">
+                            <img class="topFiveBooks"
+                                 th:src="*{'data:image/png;base64,' + topFiveBooks.get(2).image}"
+                                 alt=""></a>
+                    </div>
+                    <div class="d-none d-sm-block d-md-none col-sm-2"></div>
+                    <div class="d-none d-sm-block d-md-none col-sm-4">
+                        <a th:href="@{/openBook(bookId=${topFiveBooks.get(3).id})}">
+                            <img class="topFiveBooks"
+                                 th:src="*{'data:image/png;base64,' + topFiveBooks.get(3).image}"
+                                 alt=""></a>
+                    </div>
+                    <div class="d-none d-sm-block col-sm-1"></div>
+                </div>
+                <div class="row align-items-center d-lg-none">
+                    <div class="col-md-2 d-none d-md-block"></div>
+                    <div class="col-md col-12 d-sm-none d-md-block">
+                        <a th:href="@{/openBook(bookId=${topFiveBooks.get(3).id})}">
+                            <img class="topFiveBooks"
+                                 th:src="*{'data:image/png;base64,' + topFiveBooks.get(3).image}"
+                                 alt=""></a>
+                    </div>
+                    <div class="col-md-1 col-sm d-none d-sm-block"></div>
+                    <div class="col-md col-12 col-sm-4">
+                        <a th:href="@{/openBook(bookId=${topFiveBooks.get(4).id})}">
+                            <img class="topFiveBooks"
+                                 th:src="*{'data:image/png;base64,' + topFiveBooks.get(4).image}"
+                                 alt=""></a>
+                    </div>
+                    <div class="col-md-2 col-sm d-none d-sm-block"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!---->
+<!--Genres And All Books-->
+<!---->
+<section class="mainBlock">
+    <div>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12 d-lg-none">
+                    <button class="btn btn-primary buttonOpenGenreFilter" type="button" data-bs-toggle="offcanvas"
+                            data-bs-target="#genreFilter" aria-controls="genreFilter">Фільтер
+                        за жанрами
+                    </button>
+                </div>
+                <div class="offcanvas offcanvas-start d-lg-none" data-bs-scroll="true" data-bs-backdrop="false"
+                     tabindex="-1" id="genreFilter" aria-labelledby="genreFilter">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="genreFilterLabel">Фільтер за
+                            жанрами</h5>
+                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                                aria-label="Close">
+                        </button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item" th:with="currentUrl=(${@currentUrlWithoutParam.apply('genre')})"
+                                th:each="genre : ${genres}">
+                                <a th:href="@{${currentUrl}(genre=${genre.id})}" th:text="${genre.name}"
+                                   class="text-decoration-none"></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${genre != null && page.getTotalElements() != 0}">
+                <div class="row text-center d-lg-none">
+                    <div class="col-12">
+                        <div class="searchedText">
+                            <span>Пошуковий запит</span>:
+                            <span th:text="${genre}"></span>.
+                            <span>Знайдено книг</span>:
+                            <span th:text="${page.getTotalElements()}"></span>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${authorOrTitle != null && page.getTotalElements() != 0}">
+                <div class="row text-center d-lg-none">
+                    <div class="col-12">
+                        <div class="searchedText">
+                            <span>Пошуковий запит</span>:
+                            <span th:text="${authorOrTitle}"></span>.
+                            <span>Знайдено книг</span>:
+                            <span th:text="${page.getTotalElements()}"></span>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${(authorOrTitle != null || genre != null) && page.getTotalElements() == 0}">
+                <div class="row align-items-center d-lg-none text-center">
+                    <div class="col-12 noBooks">
+                        <h4><span>Немає книг за таким пошуковим запитом</span>
+                            "
+                            <span th:if="${authorOrTitle != null}" th:text="${authorOrTitle}"></span>
+                            <span th:if="${genre != null}" th:text="${genre}"></span>
+                            "
+                        </h4>
+                        <a href="/" class="btn btn-primary homeLink">Всі книги</a>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${page.getTotalElements() != 0}">
+                <div class="row align-items-center d-none d-sm-flex d-lg-none"
+                     th:each="i : ${#numbers.sequence(0, page.getNumberOfElements() - 2, 2)}">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm">
+                        <div>
+                            <div class="card book" th:object="${page.getContent().get(i)}">
+                                <a th:href="@{/openBook(bookId=*{id})}" class="text-decoration-none">
+                                    <img th:src="*{'data:image/png;base64,' + image}"
+                                         class="card-img-top" alt="">
+                                </a>
+                                <div class="card-body">
+                                    <p class="card-text aboutBook text-center" th:text="*{name}"></p>
+                                    <div class="d-flex justify-content-evenly">
+                                        <div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor"
+                                                 class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                            </svg>
+                                            <span th:text="*{rating.viewsNumber}"></span>
+                                        </div>
+                                        <div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor"
+                                                 class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                            </svg>
+                                            <span th:text="*{rating.avgRating}"></span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-center" sec:authorize="isAuthenticated()">
+                                        <div class="row">
+                                            <div class="stars">
+                                                <form action="" th:data-score="*{id}">
+                                                    <input data-score="5" class="star vote star-5"
+                                                           th:id="*{'star-5-' + id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-5" th:for="*{'star-5-' + id}"></label>
+                                                    <input data-score="4" class="star vote star-4"
+                                                           th:id="*{'star-4-' + id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-4" th:for="*{'star-4-' + id}"></label>
+                                                    <input data-score="3" class="star vote star-3"
+                                                           th:id="*{'star-3-' + id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-3" th:for="*{'star-3-' + id}"></label>
+                                                    <input data-score="2" class="star vote star-2"
+                                                           th:id="*{'star-2-' + id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-2" th:for="*{'star-2-' + id}"></label>
+                                                    <input data-score="1" class="star vote star-1"
+                                                           th:id="*{'star-1-' + id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-1" th:for="*{'star-1-' + id}"></label>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm">
+                        <div>
+                            <div class="card book" th:object="${page.getContent().get(i + 1)}">
+                                <a th:href="@{/openBook(bookId=*{id})}" class="text-decoration-none">
+                                    <img th:src="*{'data:image/png;base64,' + image}"
+                                         class="card-img-top" alt="">
+                                </a>
+                                <div class="card-body">
+                                    <p class="card-text aboutBook text-center" th:text="*{name}"></p>
+                                    <p class="card-text aboutBook text-center">Author</p>
+                                    <div class="d-flex justify-content-evenly">
+                                        <div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor"
+                                                 class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                            </svg>
+                                            <span th:text="*{rating.viewsNumber}"></span>
+                                        </div>
+                                        <div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor"
+                                                 class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                            </svg>
+                                            <span th:text="*{rating.avgRating}"></span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-center" sec:authorize="isAuthenticated()">
+                                        <div class="row">
+                                            <div class="stars">
+                                                <form action="" th:data-score="*{id}">
+                                                    <input data-score="5" class="star vote star-5"
+                                                           th:id="*{'star-5-' + id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-5" th:for="*{'star-5-' + id}"></label>
+                                                    <input data-score="4" class="star vote star-4"
+                                                           th:id="*{'star-4-' + id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-4" th:for="*{'star-4-' + id}"></label>
+                                                    <input data-score="3" class="star vote star-3"
+                                                           th:id="*{'star-3-' + id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-3" th:for="*{'star-3-' + id}"></label>
+                                                    <input data-score="2" class="star vote star-2"
+                                                           th:id="*{'star-2-' + id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-2" th:for="*{'star-2-' + id}"></label>
+                                                    <input data-score="1" class="star vote star-1"
+                                                           th:id="*{'star-1-' + id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-1" th:for="*{'star-1-' + id}"></label>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-1"></div>
+                </div>
+                <div class="row align-items-center d-none d-sm-flex d-lg-none"
+                     th:if="${page.getNumberOfElements() % 2 != 0}">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm">
+                        <div>
+                            <div class="card book" th:object="${page.getContent().get(page.getNumberOfElements() - 1)}">
+                                <a th:href="@{/openBook(bookId=*{id})}" class="text-decoration-none">
+                                    <img th:src="*{'data:image/png;base64,' + image}"
+                                         class="card-img-top" alt="">
+                                </a>
+                                <div class="card-body">
+                                    <p class="card-text aboutBook text-center" th:text="*{name}"></p>
+                                    <div class="d-flex justify-content-evenly">
+                                        <div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor"
+                                                 class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                            </svg>
+                                            <span th:text="*{rating.viewsNumber}"></span>
+                                        </div>
+                                        <div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor"
+                                                 class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                            </svg>
+                                            <span th:text="*{rating.avgRating}"></span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-center" sec:authorize="isAuthenticated()">
+                                        <div class="row">
+                                            <div class="stars">
+                                                <form action="" th:data-score="*{id}">
+                                                    <input data-score="5" class="star vote star-5"
+                                                           th:id="*{'star-5-' + id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-5" th:for="*{'star-5-' + id}"></label>
+                                                    <input data-score="4" class="star vote star-4"
+                                                           th:id="*{'star-4-' + id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-4" th:for="*{'star-4-' + id}"></label>
+                                                    <input data-score="3" class="star vote star-3"
+                                                           th:id="*{'star-3-' + id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-3" th:for="*{'star-3-' + id}"></label>
+                                                    <input data-score="2" class="star vote star-2"
+                                                           th:id="*{'star-2-' + id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-2" th:for="*{'star-2-' + id}"></label>
+                                                    <input data-score="1" class="star vote star-1"
+                                                           th:id="*{'star-1-' + id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-1" th:for="*{'star-1-' + id}"></label>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm"></div>
+                    <div class="col-sm-1"></div>
+                </div>
+                <div class="row align-items-center d-sm-none" th:each="book : ${page}">
+                    <div class="col-12">
+                        <div>
+                            <div class="card book">
+                                <a th:href="@{/openBook(bookId=${book.id})}" class="text-decoration-none">
+                                    <img th:src="${'data:image/png;base64,' + book.image}"
+                                         class="card-img-top" alt="">
+                                </a>
+                                <div class="card-body">
+                                    <p class="card-text aboutBook text-center" th:text="${book.name}"></p>
+                                    <div class="d-flex justify-content-evenly">
+                                        <div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor"
+                                                 class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                            </svg>
+                                            <span th:text="${book.rating.viewsNumber}"></span>
+                                        </div>
+                                        <div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor"
+                                                 class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                            </svg>
+                                            <span th:text="${book.rating.avgRating}"></span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-center" sec:authorize="isAuthenticated()">
+                                        <div class="row">
+                                            <div class="stars">
+                                                <form action="" th:data-score="${book.id}">
+                                                    <input data-score="5" class="star vote star-5"
+                                                           th:id="${'star-5-xs-' + book.id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-5"
+                                                           th:for="${'star-5-xs-' + book.id}"></label>
+                                                    <input data-score="4" class="star vote star-4"
+                                                           th:id="${'star-4-xs-' + book.id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-4"
+                                                           th:for="${'star-4-xs-' + book.id}"></label>
+                                                    <input data-score="3" class="star vote star-3"
+                                                           th:id="${'star-3-xs-' + book.id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-3"
+                                                           th:for="${'star-3-xs-' + book.id}"></label>
+                                                    <input data-score="2" class="star vote star-2"
+                                                           th:id="${'star-2-xs-' + book.id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-2"
+                                                           th:for="${'star-2-xs-' + book.id}"></label>
+                                                    <input data-score="1" class="star vote star-1"
+                                                           th:id="${'star-1-xs-' + book.id}"
+                                                           type="radio" name="star"/>
+                                                    <label class="star star-1"
+                                                           th:for="${'star-1-xs-' + book.id}"></label>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <!--Pagination for SM and MD-->
+                    <div class="col-sm d-none d-sm-block d-lg-none">
+                        <ul class="pagination justify-content-center"
+                            th:with="currentUrl=(${@currentUrlWithoutParam.apply('page')})">
+                            <li class="page-item disabled" th:if="${page.number == 0}">
+                                <a class="page-link" href="#" tabindex="-1">Назад</a>
+                            </li>
+                            <li class="page-item" th:if="${page.number > 0}">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${page.number - 1})}" tabindex="-1">Назад</a>
+                            </li>
+                            <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                                th:if="${pageNumber + 1 < page.number + 1}">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${pageNumber})}"
+                                   th:text="${pageNumber + 1}"></a>
+                            </li>
+                            <li class="page-item active">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${page.number})}"
+                                   th:text="${page.number + 1}"></a>
+                            </li>
+                            <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                                th:if="${pageNumber + 1 > page.number + 1}">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${pageNumber})}"
+                                   th:text="${pageNumber + 1}"></a>
+                            </li>
+                            <li class="page-item disabled"
+                                th:if="${page.number == page.totalPages - 1}">
+                                <a class="page-link" href="#" tabindex="-1">Вперед</a>
+                            </li>
+                            <li class="page-item" th:if="${page.number < page.totalPages - 1}">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${page.number + 1})}"
+                                   tabindex="-1">Вперед</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--Pagination for XS if there are less than 2 or equals 2 pages-->
+                    <div class="col d-sm-none" th:if="${page.number <= 1}">
+                        <ul class="pagination pagination-sm justify-content-center"
+                            th:with="currentUrl=(${@currentUrlWithoutParam.apply('page')})">
+                            <li class="page-item disabled" th:if="${page.number == 0}">
+                                <a class="page-link" href="#" tabindex="-1">Назад</a>
+                            </li>
+                            <li class="page-item" th:if="${page.number > 0}">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${page.number - 1})}" tabindex="-1">Назад</a>
+                            </li>
+                            <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                                th:if="${pageNumber + 1 < page.number + 1}">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${pageNumber})}"
+                                   th:text="${pageNumber + 1}"></a>
+                            </li>
+                            <li class="page-item active">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${page.number})}"
+                                   th:text="${page.number + 1} "></a>
+                            </li>
+                            <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                                th:if="${pageNumber + 1 > page.number + 1 && pageNumber + 1 < 6}">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${pageNumber})}"
+                                   th:text="${pageNumber + 1}"></a>
+                            </li>
+                            <li class="page-item disabled"
+                                th:if="${page.number == page.totalPages - 1}">
+                                <a class="page-link" href="#" tabindex="-1">Вперед</a>
+                            </li>
+                            <li class="page-item" th:if="${page.number < page.totalPages - 1}">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${page.number + 1})}"
+                                   tabindex="-1">Вперед</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--Pagination for XS if there are more than 2 pages-->
+                    <div class="col d-sm-none" th:if="${page.number > 1}">
+                        <ul class="pagination pagination-sm justify-content-center"
+                            th:with="currentUrl=(${@currentUrlWithoutParam.apply('page')})">
+                            <li class="page-item disabled" th:if="${page.number == 0}">
+                                <a class="page-link" href="#" tabindex="-1">Назад</a>
+                            </li>
+                            <li class="page-item" th:if="${page.number > 0}">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${page.number - 1})}" tabindex="-1">Назад</a>
+                            </li>
+                            <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                                th:if="${pageNumber + 1  > page.number + 1 - 3 && pageNumber + 1  < page.number + 1}">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${pageNumber})}"
+                                   th:text="${pageNumber + 1}"></a>
+                            </li>
+                            <li class="page-item active">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${page.number})}"
+                                   th:text="${page.number + 1} "></a>
+                            </li>
+                            <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                                th:if="${pageNumber + 1  < page.number + 1 + 3 && pageNumber + 1  > page.number + 1}">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${pageNumber})}"
+                                   th:text="${pageNumber + 1}"></a>
+                            </li>
+                            <li class="page-item disabled"
+                                th:if="${page.number == page.totalPages - 1}">
+                                <a class="page-link" href="#" tabindex="-1">Вперед</a>
+                            </li>
+                            <li class="page-item" th:if="${page.number < page.totalPages - 1}">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${page.number + 1})}"
+                                   tabindex="-1">Вперед</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--Для XS улутшить вивод кінцевих сторінок в pagination-->
+                </div>
+            </div>
+            <div class="row d-none d-lg-flex">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2">
+                    <ul class="list-group list-group-flush genreFilterLg">
+                        <li class="list-group-item" th:with="currentUrl=(${@currentUrlWithoutParam.apply('genre')})"
+                            th:each="genre : ${genres}">
+                            <a th:href="@{${currentUrl}(genre=${genre.id})}" th:text="${genre.name}"
+                               class="text-decoration-none"></a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-8">
+                    <div th:if="${genre != null && page.getTotalElements() != 0}">
+                        <div class="row text-center d-none d-lg-block">
+                            <div class="searchedText">
+                                <span>Пошуковий запит</span>:
+                                <span th:text="${genre}"></span>.
+                                <span>Знайдено книг</span>:
+                                <span th:text="${page.getTotalElements()}"></span>.
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${authorOrTitle != null && page.getTotalElements() != 0}">
+                        <div class="row text-center d-none d-lg-block">
+                            <div class="searchedText">
+                                <span>Пошуковий запит</span>:
+                                <span th:text="${authorOrTitle}"></span>.
+                                <span>Знайдено книг</span>:
+                                <span th:text="${page.getTotalElements()}"></span>.
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${(authorOrTitle != null || genre != null) && page.getTotalElements() == 0}">
+                        <div class="row align-items-center d-none d-lg-block text-center">
+                            <div class="col-12 noBooks">
+                                <h4><span>Немає книг за таким пошуковим запитом</span>
+                                    "
+                                    <span th:if="${authorOrTitle != null}" th:text="${authorOrTitle}"></span>
+                                    <span th:if="${genre != null}" th:text="${genre}"></span>
+                                    "
+                                </h4>
+                                <a href="/" class="btn btn-primary homeLink">Всі книги</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${page.getTotalElements() != 0}">
+                        <div class="row d-flex justify-content-around"
+                             th:each="i : ${#numbers.sequence(0, page.getNumberOfElements() - 4, 4)}">
+                            <div class="col-lg-3">
+                                <div>
+                                    <div class="card book" th:object="${page.getContent().get(i)}">
+                                        <a th:href="@{/openBook(bookId=*{id})}" class="text-decoration-none">
+                                            <img th:src="*{'data:image/png;base64,' + image}"
+                                                 class="card-img-top" alt="">
+                                        </a>
+                                        <div class="card-body">
+                                            <p class="card-text aboutBook text-center" th:text="*{name}"></p>
+                                            <div class="d-flex justify-content-evenly">
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                                        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                                        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                                    </svg>
+                                                    <span th:text="*{rating.viewsNumber}"></span>
+                                                </div>
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                    </svg>
+                                                    <span th:text="*{rating.avgRating}"></span>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-center"
+                                                 sec:authorize="isAuthenticated()">
+                                                <div class="row">
+                                                    <div class="stars">
+                                                        <form action="" th:data-score="*{id}">
+                                                            <input data-score="5" class="star vote star-5"
+                                                                   th:id="*{'star-5-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-5"
+                                                                   th:for="*{'star-5-lg-' + id}"></label>
+                                                            <input data-score="4" class="star vote star-4"
+                                                                   th:id="*{'star-4-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-4"
+                                                                   th:for="*{'star-4-lg-' + id}"></label>
+                                                            <input data-score="3" class="star vote star-3"
+                                                                   th:id="*{'star-3-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-3"
+                                                                   th:for="*{'star-3-lg-' + id}"></label>
+                                                            <input data-score="2" class="star vote star-2"
+                                                                   th:id="*{'star-2-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-2"
+                                                                   th:for="*{'star-2-lg-' + id}"></label>
+                                                            <input data-score="1" class="star vote star-1"
+                                                                   th:id="*{'star-1-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-1"
+                                                                   th:for="*{'star-1-lg-' + id}"></label>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-end"
+                                                 sec:authorize="hasAuthority('ROLE_ADMIN')">
+                                                <div>
+                                                    <a class="manageBook" type="button" data-bs-toggle="modal"
+                                                       th:data-bs-target="*{'#editBook' + id + 'Modal'}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                             fill="currentColor"
+                                                             class="bi bi-gear-fill" viewBox="0 0 16 16">
+                                                            <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                                <div>
+                                                    <a class="manageBook" type="button" data-bs-toggle="modal"
+                                                       th:data-bs-target="*{'#deleteBook' + id + 'Modal'}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                             fill="currentColor"
+                                                             class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div>
+                                    <div class="card book" th:object="${page.getContent().get(i + 1)}">
+                                        <a th:href="@{/openBook(bookId=*{id})}" class="text-decoration-none">
+                                            <img th:src="*{'data:image/png;base64,' + image}"
+                                                 class="card-img-top" alt="">
+                                        </a>
+                                        <div class="card-body">
+                                            <p class="card-text aboutBook text-center" th:text="*{name}"></p>
+                                            <div class="d-flex justify-content-evenly">
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                                        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                                        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                                    </svg>
+                                                    <span th:text="*{rating.viewsNumber}"></span>
+                                                </div>
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                    </svg>
+                                                    <span th:text="*{rating.avgRating}"></span>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-center"
+                                                 sec:authorize="isAuthenticated()">
+                                                <div class="row">
+                                                    <div class="stars">
+                                                        <form action="" th:data-score="*{id}">
+                                                            <input data-score="5" class="star vote star-5"
+                                                                   th:id="*{'star-5-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-5"
+                                                                   th:for="*{'star-5-lg-' + id}"></label>
+                                                            <input data-score="4" class="star vote star-4"
+                                                                   th:id="*{'star-4-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-4"
+                                                                   th:for="*{'star-4-lg-' + id}"></label>
+                                                            <input data-score="3" class="star vote star-3"
+                                                                   th:id="*{'star-3-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-3"
+                                                                   th:for="*{'star-3-lg-' + id}"></label>
+                                                            <input data-score="2" class="star vote star-2"
+                                                                   th:id="*{'star-2-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-2"
+                                                                   th:for="*{'star-2-lg-' + id}"></label>
+                                                            <input data-score="1" class="star vote star-1"
+                                                                   th:id="*{'star-1-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-1"
+                                                                   th:for="*{'star-1-lg-' + id}"></label>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-end"
+                                                 sec:authorize="hasAuthority('ROLE_ADMIN')">
+                                                <div>
+                                                    <a class="manageBook" type="button" data-bs-toggle="modal"
+                                                       th:data-bs-target="*{'#editBook' + id + 'Modal'}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                             fill="currentColor"
+                                                             class="bi bi-gear-fill" viewBox="0 0 16 16">
+                                                            <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                                <div>
+                                                    <a class="manageBook" type="button" data-bs-toggle="modal"
+                                                       th:data-bs-target="*{'#deleteBook' + id + 'Modal'}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                             fill="currentColor"
+                                                             class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div>
+                                    <div class="card book" th:object="${page.getContent().get(i + 2)}">
+                                        <a th:href="@{/openBook(bookId=*{id})}" class="text-decoration-none">
+                                            <img th:src="*{'data:image/png;base64,' + image}"
+                                                 class="card-img-top" alt="">
+                                        </a>
+                                        <div class="card-body">
+                                            <p class="card-text aboutBook text-center" th:text="*{name}"></p>
+                                            <div class="d-flex justify-content-evenly">
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                                        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                                        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                                    </svg>
+                                                    <span th:text="*{rating.viewsNumber}"></span>
+                                                </div>
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                    </svg>
+                                                    <span th:text="*{rating.avgRating}"></span>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-center"
+                                                 sec:authorize="isAuthenticated()">
+                                                <div class="row">
+                                                    <div class="stars">
+                                                        <form action="" th:data-score="*{id}">
+                                                            <input data-score="5" class="star vote star-5"
+                                                                   th:id="*{'star-5-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-5"
+                                                                   th:for="*{'star-5-lg-' + id}"></label>
+                                                            <input data-score="4" class="star vote star-4"
+                                                                   th:id="*{'star-4-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-4"
+                                                                   th:for="*{'star-4-lg-' + id}"></label>
+                                                            <input data-score="3" class="star vote star-3"
+                                                                   th:id="*{'star-3-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-3"
+                                                                   th:for="*{'star-3-lg-' + id}"></label>
+                                                            <input data-score="2" class="star vote star-2"
+                                                                   th:id="*{'star-2-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-2"
+                                                                   th:for="*{'star-2-lg-' + id}"></label>
+                                                            <input data-score="1" class="star vote star-1"
+                                                                   th:id="*{'star-1-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-1"
+                                                                   th:for="*{'star-1-lg-' + id}"></label>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-end"
+                                                 sec:authorize="hasAuthority('ROLE_ADMIN')">
+                                                <div>
+                                                    <a class="manageBook" type="button" data-bs-toggle="modal"
+                                                       th:data-bs-target="*{'#editBook' + id + 'Modal'}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                             fill="currentColor"
+                                                             class="bi bi-gear-fill" viewBox="0 0 16 16">
+                                                            <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                                <div>
+                                                    <a class="manageBook" type="button" data-bs-toggle="modal"
+                                                       th:data-bs-target="*{'#deleteBook' + id + 'Modal'}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                             fill="currentColor"
+                                                             class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div>
+                                    <div class="card book" th:object="${page.getContent().get(i + 3)}">
+                                        <a th:href="@{/openBook(bookId=*{id})}" class="text-decoration-none">
+                                            <img th:src="*{'data:image/png;base64,' + image}"
+                                                 class="card-img-top" alt="">
+                                        </a>
+                                        <div class="card-body">
+                                            <p class="card-text aboutBook text-center" th:text="*{name}"></p>
+                                            <div class="d-flex justify-content-evenly">
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                                        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                                        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                                    </svg>
+                                                    <span th:text="*{rating.viewsNumber}"></span>
+                                                </div>
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                    </svg>
+                                                    <span th:text="*{rating.avgRating}"></span>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-center"
+                                                 sec:authorize="isAuthenticated()">
+                                                <div class="row">
+                                                    <div class="stars">
+                                                        <form action="" th:data-score="*{id}">
+                                                            <input data-score="5" class="star vote star-5"
+                                                                   th:id="*{'star-5-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-5"
+                                                                   th:for="*{'star-5-lg-' + id}"></label>
+                                                            <input data-score="4" class="star vote star-4"
+                                                                   th:id="*{'star-4-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-4"
+                                                                   th:for="*{'star-4-lg-' + id}"></label>
+                                                            <input data-score="3" class="star vote star-3"
+                                                                   th:id="*{'star-3-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-3"
+                                                                   th:for="*{'star-3-lg-' + id}"></label>
+                                                            <input data-score="2" class="star vote star-2"
+                                                                   th:id="*{'star-2-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-2"
+                                                                   th:for="*{'star-2-lg-' + id}"></label>
+                                                            <input data-score="1" class="star vote star-1"
+                                                                   th:id="*{'star-1-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-1"
+                                                                   th:for="*{'star-1-lg-' + id}"></label>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-end"
+                                                 sec:authorize="hasAuthority('ROLE_ADMIN')">
+                                                <div>
+                                                    <a class="manageBook" type="button" data-bs-toggle="modal"
+                                                       th:data-bs-target="*{'#editBook' + id + 'Modal'}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                             fill="currentColor"
+                                                             class="bi bi-gear-fill" viewBox="0 0 16 16">
+                                                            <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                                <div>
+                                                    <a class="manageBook" type="button" data-bs-toggle="modal"
+                                                       th:data-bs-target="*{'#deleteBook' + id + 'Modal'}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                             fill="currentColor"
+                                                             class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1"></div>
+                        </div>
+                        <div class="row d-flex justify-content-around"
+                             th:if="${page.getNumberOfElements() % 4 != 0}">
+                            <div class="col-lg-3" th:if="${page.getNumberOfElements() % 4 > 0}">
+                                <div>
+                                    <div class="card book"
+                                         th:object="${page.getContent().get(page.getNumberOfElements() - 1)}">
+                                        <a th:href="@{/openBook(bookId=*{id})}" class="text-decoration-none">
+                                            <img th:src="*{'data:image/png;base64,' + image}"
+                                                 class="card-img-top" alt="">
+                                        </a>
+                                        <div class="card-body">
+                                            <p class="card-text aboutBook text-center" th:text="*{name}"></p>
+                                            <div class="d-flex justify-content-evenly">
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                                        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                                        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                                    </svg>
+                                                    <span th:text="*{rating.viewsNumber}"></span>
+                                                </div>
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                    </svg>
+                                                    <span th:text="*{rating.avgRating}"></span>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-center"
+                                                 sec:authorize="isAuthenticated()">
+                                                <div class="row">
+                                                    <div class="stars">
+                                                        <form action="" th:data-score="*{id}">
+                                                            <input data-score="5" class="star vote star-5"
+                                                                   th:id="*{'star-5-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-5"
+                                                                   th:for="*{'star-5-lg-' + id}"></label>
+                                                            <input data-score="4" class="star vote star-4"
+                                                                   th:id="*{'star-4-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-4"
+                                                                   th:for="*{'star-4-lg-' + id}"></label>
+                                                            <input data-score="3" class="star vote star-3"
+                                                                   th:id="*{'star-3-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-3"
+                                                                   th:for="*{'star-3-lg-' + id}"></label>
+                                                            <input data-score="2" class="star vote star-2"
+                                                                   th:id="*{'star-2-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-2"
+                                                                   th:for="*{'star-2-lg-' + id}"></label>
+                                                            <input data-score="1" class="star vote star-1"
+                                                                   th:id="*{'star-1-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-1"
+                                                                   th:for="*{'star-1-lg-' + id}"></label>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-end"
+                                                 sec:authorize="hasAuthority('ROLE_ADMIN')">
+                                                <div>
+                                                    <a class="manageBook" type="button" data-bs-toggle="modal"
+                                                       th:data-bs-target="*{'#editBook' + id + 'Modal'}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                             fill="currentColor"
+                                                             class="bi bi-gear-fill" viewBox="0 0 16 16">
+                                                            <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                                <div>
+                                                    <a class="manageBook" type="button" data-bs-toggle="modal"
+                                                       th:data-bs-target="*{'#deleteBook' + id + 'Modal'}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                             fill="currentColor"
+                                                             class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3" th:unless="${page.getNumberOfElements() % 4 > 0}"></div>
+                            <div class="col-lg-3" th:if="${page.getNumberOfElements() % 4 > 1}">
+                                <div>
+                                    <div class="card book"
+                                         th:object="${page.getContent().get(page.getNumberOfElements() - 2)}">
+                                        <a th:href="@{/openBook(bookId=*{id})}" class="text-decoration-none">
+                                            <img th:src="*{'data:image/png;base64,' + image}"
+                                                 class="card-img-top" alt="">
+                                        </a>
+                                        <div class="card-body">
+                                            <p class="card-text aboutBook text-center" th:text="*{name}"></p>
+                                            <div class="d-flex justify-content-evenly">
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                                        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                                        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                                    </svg>
+                                                    <span th:text="*{rating.viewsNumber}"></span>
+                                                </div>
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                    </svg>
+                                                    <span th:text="*{rating.avgRating}"></span>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-center"
+                                                 sec:authorize="isAuthenticated()">
+                                                <div class="row">
+                                                    <div class="stars">
+                                                        <form action="" th:data-score="*{id}">
+                                                            <input data-score="5" class="star vote star-5"
+                                                                   th:id="*{'star-5-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-5"
+                                                                   th:for="*{'star-5-lg-' + id}"></label>
+                                                            <input data-score="4" class="star vote star-4"
+                                                                   th:id="*{'star-4-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-4"
+                                                                   th:for="*{'star-4-lg-' + id}"></label>
+                                                            <input data-score="3" class="star vote star-3"
+                                                                   th:id="*{'star-3-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-3"
+                                                                   th:for="*{'star-3-lg-' + id}"></label>
+                                                            <input data-score="2" class="star vote star-2"
+                                                                   th:id="*{'star-2-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-2"
+                                                                   th:for="*{'star-2-lg-' + id}"></label>
+                                                            <input data-score="1" class="star vote star-1"
+                                                                   th:id="*{'star-1-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-1"
+                                                                   th:for="*{'star-1-lg-' + id}"></label>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-end"
+                                                 sec:authorize="hasAuthority('ROLE_ADMIN')">
+                                                <div>
+                                                    <a class="manageBook" type="button" data-bs-toggle="modal"
+                                                       th:data-bs-target="*{'#editBook' + id + 'Modal'}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                             fill="currentColor"
+                                                             class="bi bi-gear-fill" viewBox="0 0 16 16">
+                                                            <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                                <div>
+                                                    <a class="manageBook" type="button" data-bs-toggle="modal"
+                                                       th:data-bs-target="*{'#deleteBook' + id + 'Modal'}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                             fill="currentColor"
+                                                             class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3" th:unless="${page.getNumberOfElements() % 4 > 1}"></div>
+                            <div class="col-lg-3" th:if="${page.getNumberOfElements() % 4 > 2}">
+                                <div>
+                                    <div class="card book"
+                                         th:object="${page.getContent().get(page.getNumberOfElements() - 3)}">
+                                        <a th:href="@{/openBook(bookId=*{id})}" class="text-decoration-none">
+                                            <img th:src="*{'data:image/png;base64,' + image}"
+                                                 class="card-img-top" alt="">
+                                        </a>
+                                        <div class="card-body">
+                                            <p class="card-text aboutBook text-center" th:text="*{name}"></p>
+                                            <div class="d-flex justify-content-evenly">
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                                        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                                        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                                    </svg>
+                                                    <span th:text="*{rating.viewsNumber}"></span>
+                                                </div>
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                    </svg>
+                                                    <span th:text="*{rating.avgRating}"></span>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-center"
+                                                 sec:authorize="isAuthenticated()">
+                                                <div class="row">
+                                                    <div class="stars">
+                                                        <form action="" th:data-score="*{id}">
+                                                            <input data-score="5" class="star vote star-5"
+                                                                   th:id="*{'star-5-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-5"
+                                                                   th:for="*{'star-5-lg-' + id}"></label>
+                                                            <input data-score="4" class="star vote star-4"
+                                                                   th:id="*{'star-4-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-4"
+                                                                   th:for="*{'star-4-lg-' + id}"></label>
+                                                            <input data-score="3" class="star vote star-3"
+                                                                   th:id="*{'star-3-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-3"
+                                                                   th:for="*{'star-3-lg-' + id}"></label>
+                                                            <input data-score="2" class="star vote star-2"
+                                                                   th:id="*{'star-2-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-2"
+                                                                   th:for="*{'star-2-lg-' + id}"></label>
+                                                            <input data-score="1" class="star vote star-1"
+                                                                   th:id="*{'star-1-lg-' + id}"
+                                                                   type="radio" name="star"/>
+                                                            <label class="star star-1"
+                                                                   th:for="*{'star-1-lg-' + id}"></label>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-end"
+                                                 sec:authorize="hasAuthority('ROLE_ADMIN')">
+                                                <div>
+                                                    <a class="manageBook" type="button" data-bs-toggle="modal"
+                                                       th:data-bs-target="*{'#editBook' + id + 'Modal'}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                             fill="currentColor"
+                                                             class="bi bi-gear-fill" viewBox="0 0 16 16">
+                                                            <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                                <div>
+                                                    <a class="manageBook" type="button" data-bs-toggle="modal"
+                                                       th:data-bs-target="*{'#deleteBook' + id + 'Modal'}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                             fill="currentColor"
+                                                             class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3" th:unless="${page.getNumberOfElements() % 4 > 2}"></div>
+                            <div class="col-lg-3"></div>
+                            <div class="col-lg-1"></div>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-lg">
+                                <ul class="pagination justify-content-center"
+                                    th:with="currentUrl=(${@currentUrlWithoutParam.apply('page')})">
+                                    <li class="page-item disabled" th:if="${page.number == 0}">
+                                        <a class="page-link" href="#" tabindex="-1">Назад</a>
+                                    </li>
+                                    <li class="page-item" th:if="${page.number > 0}">
+                                        <a class="page-link" th:href="@{${currentUrl}(page=${page.number - 1})}"
+                                           tabindex="-1">Назад</a>
+                                    </li>
+                                    <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                                        th:if="${pageNumber + 1 < page.number + 1}">
+                                        <a class="page-link" th:href="@{${currentUrl}(page=${pageNumber})}"
+                                           th:text="${pageNumber + 1}"></a>
+                                    </li>
+                                    <li class="page-item active">
+                                        <a class="page-link" th:href="@{${currentUrl}(page=${page.number})}"
+                                           th:text="${page.number + 1}"></a>
+                                    </li>
+                                    <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                                        th:if="${pageNumber + 1 > page.number + 1}">
+                                        <a class="page-link" th:href="@{${currentUrl}(page=${pageNumber})}"
+                                           th:text="${pageNumber + 1}"></a>
+                                    </li>
+                                    <li class="page-item disabled"
+                                        th:if="${page.number == page.totalPages - 1}">
+                                        <a class="page-link" href="#" tabindex="-1">Вперед</a>
+                                    </li>
+                                    <li class="page-item" th:if="${page.number < page.totalPages - 1}">
+                                        <a class="page-link" th:href="@{${currentUrl}(page=${page.number + 1})}"
+                                           tabindex="-1">Вперед</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section th:replace="~{footer.html}"></section>
+<div sec:authorize="hasAuthority('ROLE_ADMIN')">
+    <div th:each="book : ${page}">
+        <div class="modal fade" th:id="${'editBook' + book.id + 'Modal'}" tabindex="-1"
+             aria-labelledby="editBookModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editBookModalLabel">Змінити дані про
+                            книгу</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-10">
+                                    <form th:id="${'editBook' + book.id + 'Form'}" class="formEditBook"
+                                          enctype="multipart/form-data" th:action="@{/saveBook}" method="POST"
+                                          th:object="${book}">
+                                        <div>
+                                            <div class="form-group row">
+                                                <img class="newBookImg"
+                                                     th:src="*{'data:image/png;base64,' + image}"
+                                                     alt="">
+                                                <label th:for="*{'image' + id}" class="parameterName">Картинка</label>
+                                                <input type="file" class="form-control"
+                                                       th:id="*{'image' + id}"
+                                                       name="imageParam" accept="image/jpeg,image/png">
+                                            </div>
+                                            <div class="form-group row">
+                                                <label th:for="*{'content' + id}" class="parameterName">Вміст</label>
+                                                <input type="file" class="form-control" th:id="*{'content' + id}"
+                                                       name="contentParam" accept="application/pdf">
+                                            </div>
+                                            <div class="form-group row">
+                                                <label th:for="*{'id' + id}" class="parameterName">ІD</label>
+                                                <input type="number" th:value="*{id}" th:id="*{'id' + id}"
+                                                       class="form-control" name="id"
+                                                       readonly value="-1" required>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label th:for="*{'name' + id}" class="parameterName">Назва</label>
+                                                <input type="text" th:value="*{name}" th:id="*{'name' + id}"
+                                                       class="form-control"
+                                                       name="name" required>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label th:for="*{'authors' + id}" class="parameterName">Автор</label>
+                                                <select th:id="*{'authors' + id}" name="authors" class="form-control"
+                                                        required multiple>
+                                                    <option th:each="authorSelect : ${authors}"
+                                                            th:value="${authorSelect.id}"
+                                                            th:text="${authorSelect.fio}"
+                                                            th:if="${book.authors.contains(authorSelect)}" selected>
+                                                    <option th:each="authorSelect : ${authors}"
+                                                            th:value="${authorSelect.id}"
+                                                            th:text="${authorSelect.fio}"
+                                                            th:if="${!book.authors.contains(authorSelect)}">
+                                                </select>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label th:for="*{'genres' + id}" class="parameterName">Жанр</label>
+                                                <select th:id="*{'genres' + id}" name="genres" class="form-control"
+                                                        required multiple>
+                                                    <option th:each="genreSelect : ${genres}"
+                                                            th:value="${genreSelect.id}"
+                                                            th:text="${genreSelect.name}"
+                                                            th:if="${book.genres.contains(genreSelect)}" selected>
+                                                    <option th:each="genreSelect : ${genres}"
+                                                            th:value="${genreSelect.id}"
+                                                            th:text="${genreSelect.name}"
+                                                            th:if="${!book.genres.contains(genreSelect)}">
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-md-1"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Закрити
+                        </button>
+                        <button type="submit" class="btn btn-primary" th:form="${'editBook' + book.id + 'Form'}">
+                            Зберегти
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div sec:authorize="hasAuthority('ROLE_ADMIN')">
+    <div th:each="book : ${page}">
+        <div class="modal fade" th:id="${'deleteBook' + book.id + 'Modal'}" tabindex="-1"
+             aria-labelledby="deleteBookModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteBookModalLabel">Ви дійсно бажаєте
+                            видалити цю книгу?</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Закрити
+                        </button>
+                        <a class="btn btn-primary" th:href="@{'/deleteBook'(bookId=${book.id})}">Видалити</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+        crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        $('.vote').on('click', function () {
+            const vote = parseInt($(this).attr('data-score'));
+            const bookId = parseInt($(this).parent().attr('data-score'));
+            console.log(vote + " " + bookId);
+            $.ajax({
+                url: '/voting',
+                method: 'POST',
+                data: {vote: vote, bookId: bookId}
+            });
+        })
+    })
+</script>
+</body>
+</html>
